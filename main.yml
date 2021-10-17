@@ -1,4 +1,4 @@
-name: rs-budget
+name: Python application
 on:
   push:
     branches:
@@ -14,5 +14,8 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
-      
+          aws-region: us-east-2
+      # Build using SAM
+      - run: sam build --use-container --template-file sam-app/template.yaml
+      # Deploy on AWS
+      - run: sam deploy --config-file sam-app/samconfig.toml --no-fail-on-empty-changeset --parameter-overrides ParameterKey=MyParam,ParameterValue=${{ secrets.MyParam }}
